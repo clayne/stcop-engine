@@ -15,6 +15,8 @@
 #include "player_hud.h"
 #include "ActorEffector.h"
 
+#include "Inventory.h"
+
 #define KNIFE_MATERIAL_NAME "objects\\knife"
 
 #ifdef DEBUG
@@ -22,7 +24,7 @@
 	extern BOOL g_bDrawBulletHit;
 #endif //#ifdef DEBUG
 
-CWeaponKnife::CWeaponKnife()
+CWeaponKnife::CWeaponKnife() : m_bIsQuickAttack{}, m_uLastActiveSlot{}
 {
 	SetState				( eHidden );
 	SetNextState			( eHidden );
@@ -80,8 +82,13 @@ void CWeaponKnife::OnStateSwitch	(u32 S)
 		switch2_Idle	();
 		break;
 	case eShowing:
-		switch2_Showing	();
+	{
+		if (!IsPending() && m_bIsQuickAttack)
+			FireStart();
+		else
+			switch2_Showing();
 		break;
+	}
 	case eHiding:
 		switch2_Hiding	();
 		break;
@@ -250,10 +257,25 @@ void CWeaponKnife::OnAnimationEnd(u32 state)
 {
 	switch (state)
 	{
-	case eHiding:	SwitchState(eHidden);	break;
+	case eHiding:
+	{
+		if (m_bIsQuickAttack)
+		{
+			m_bIsQuickAttack = false;
+			if (CActor* pActor = smart_cast<CActor*>(H_Parent()))
+				pActor->inventory().ActiveWeapon(m_uLastActiveSlot);
+		}
+		else
+		{
+			SwitchState(eHidden);
+		}
+	} break;
 	
 	case eFire: 
-	case eFire2: 	SwitchState(eIdle);		break;
+	case eFire2:
+	{
+		SwitchState(m_bIsQuickAttack ? eHiding : eIdle);
+	} break;
 
 	case eShowing:
 	case eIdle:		SwitchState(eIdle);		break;	
@@ -270,10 +292,7 @@ void CWeaponKnife::switch2_Attacking	(u32 state)
 {
 	if(IsPending())	return;
 
-	if(state==eFire)
-		PlayHUDMotion("anm_attack",		FALSE, this, state);
-	else //eFire2
-		PlayHUDMotion("anm_attack2",	FALSE, this, state);
+	PlayHUDMotion((state == eFire) ? "anm_attack" : "anm_attack2", FALSE, this, state, true, m_bIsQuickAttack ? 2.f : 1.f);
 
 	SetPending			(TRUE);
 }
@@ -290,7 +309,7 @@ void CWeaponKnife::switch2_Hiding	()
 {
 	FireEnd					();
 	VERIFY(GetState()==eHiding);
-	PlayHUDMotion("anm_hide", TRUE, this, GetState());
+	PlayHUDMotion("anm_hide", TRUE, this, GetState(), true, m_bIsQuickAttack ? 2.f : 1.f);
 }
 
 void CWeaponKnife::switch2_Hidden()
@@ -302,7 +321,7 @@ void CWeaponKnife::switch2_Hidden()
 void CWeaponKnife::switch2_Showing	()
 {
 	VERIFY(GetState()==eShowing);
-	PlayHUDMotion("anm_show", FALSE, this, GetState());
+	PlayHUDMotion("anm_show", FALSE, this, GetState(), true, m_bIsQuickAttack ? 2.f : 1.f);
 }
 
 
@@ -940,5 +959,26 @@ void CWeaponKnife::best_victim_selector::operator()(
 		m_dest_result		=	left;
 		m_min_dist			=	tmp_dist;
 		return;
+	}
+}
+
+void CWeaponKnife::StartQuickAttack(u16 currentSlot)
+{
+	if (IsPending() || m_bIsQuickAttack)
+		return;
+
+	m_uLastActiveSlot = currentSlot;
+
+	if (m_uLastActiveSlot == KNIFE_SLOT)
+	{
+		Action(kWPN_FIRE, CMD_START);
+	}
+	else
+	{
+		if (CActor* pActor = smart_cast<CActor*>(H_Parent()))
+		{
+			m_bIsQuickAttack = true;
+			pActor->inventory().ActiveWeapon(KNIFE_SLOT);
+		}
 	}
 }

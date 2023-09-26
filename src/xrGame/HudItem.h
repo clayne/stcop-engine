@@ -125,9 +125,8 @@ public:
 
 	virtual	void				UpdateXForm			()						= 0;
 
-	u32							PlayHUDMotion				(const shared_str& M, BOOL bMixIn, CHudItem*  W, u32 state, bool bWpn = true);
 	bool						isHUDAnimationExist	(LPCSTR anim_name);
-	u32							PlayHUDMotion_noCB	(const shared_str& M, BOOL bMixIn, bool bWpn = true);
+	u32							PlayHUDMotion_noCB(const shared_str& M, BOOL bMixIn, bool bWpn = true, float speed = 1.0f); 
 	void						StopCurrentAnimWithoutCallback();
 
 	//Mortan: новые параметры для системы аддонов
@@ -142,6 +141,7 @@ public:
 	IC BOOL						RenderHud				()			{ return m_huditem_flags.test(fl_renderhud);}
 	attachable_hud_item*		HudItemData				();
 	virtual void				on_a_hud_attach			();
+	u32							PlayHUDMotion(const shared_str& M, BOOL bMixIn, CHudItem* W, u32 state, bool bWpn = true, float speed = 1.0f);
 	virtual void				on_b_hud_detach			();
 	IC BOOL						HudInertionEnabled		()	const			{ return m_huditem_flags.test(fl_inertion_enable);}
 	IC BOOL						HudInertionAllowed		()	const			{ return m_huditem_flags.test(fl_inertion_allow);}

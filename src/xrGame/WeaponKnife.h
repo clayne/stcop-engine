@@ -8,6 +8,10 @@ class CWeaponKnife: public CWeapon {
 private:
 	typedef CWeapon inherited;
 
+private:
+	u16 m_uLastActiveSlot;
+	bool m_bIsQuickAttack;
+
 protected:
 
 	virtual void		switch2_Idle				();
@@ -113,6 +117,9 @@ private:
 	CObject*		TryPick					(Fvector const & start_pos,
 											 Fvector const & dir,
 											 float const dist);
+
+	public:
+	void StartQuickAttack(u16 currentSlot);
 
 	static BOOL		RayQueryCallback		(collide::rq_result& result, LPVOID this_ptr);
 	collide::rq_results				m_ray_query_results;
