@@ -56,6 +56,8 @@ public:
 	virtual void	OnMotionMark(u32 state, const motion_marks& M);
 	virtual void	ReloadMagazine	();
 
+	virtual void	UnloadMagazine(bool spawn_ammo = true);
+
 	virtual bool	Action			(u16 cmd, u32 flags);
 
 	virtual void	UpdateSounds	();
