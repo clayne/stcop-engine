@@ -17,8 +17,8 @@
 #include "game_base_space.h"
 #include "Artefact.h"
 
-static const float VEL_MAX		= 10.f;
-static const float VEL_A_MAX	= 10.f;
+constexpr float VEL_MAX = 10.f;
+constexpr float VEL_A_MAX = 10.f;
 
 #define GetWeaponParam(pWeapon, func_name, def_value)	((pWeapon) ? (pWeapon->func_name) : def_value)
 
@@ -65,7 +65,7 @@ float CActor::GetWeaponAccuracy() const
 #include "WeaponKnife.h"
 #include "xrEngine/CustomHUD.h"
 
-void CActor::g_fireParams	(const CHudItem* pHudItem, Fvector &fire_pos, Fvector &fire_dir)
+void CActor::g_fireParams(CHudItem* pHudItem, Fvector& fire_pos, Fvector& fire_dir)
 {
 	fire_dir = Cameras().Direction();
 	fire_pos = Cameras().Position();
@@ -98,6 +98,14 @@ void CActor::g_fireParams	(const CHudItem* pHudItem, Fvector &fire_pos, Fvector 
 		if (!HUDview() && pMissileA && !RPG7 && !RG6 && !WGren && !pMissile)
 		{
 			fire_pos = pMissileA->XFORM().c;
+		}
+		else if (auto weapon = smart_cast<CWeapon*>(pHudItem))
+		{
+			if (cam_active == eacFirstEye && !(weapon->IsZoomed() && !weapon->IsRotatingToZoom()))
+			{
+				// fire_dir = weapon->get_LastFD();
+				fire_pos = weapon->get_LastFP();
+			}
 		}
 	}
 
