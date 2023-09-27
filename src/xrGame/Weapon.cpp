@@ -2099,7 +2099,7 @@ void CWeapon::UpdateHudAdditonal(Fmatrix& trans)
 		return;
 
 	Fvector summary_offset{}, summary_rotate{};
-	const u32 iMovingState = pActor->MovingState();
+	u32 iMovingState = pActor->MovingState();
 
 	u8 idx = GetCurrentHudOffsetIdx();
 	const bool b_aiming = idx != 1;
@@ -2387,7 +2387,6 @@ APPLY_EFFECTS:
 	// Добавляем боковой наклон от ходьбы вбок
 	float fChangeDirSpeedMod = 3; // Восколько быстро меняем направление направление наклона, если оно в другую сторону от текущего
 
-	u32 iMovingState = pActor->MovingState();
 	if ((iMovingState & mcLStrafe) != 0)
 	{ // Движемся влево
 		float fVal = (m_fLR_MovingFactor > 0.f ? fStepPerUpd * fChangeDirSpeedMod : fStepPerUpd);
