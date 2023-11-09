@@ -598,7 +598,7 @@ void	CActor::Hit(SHit* pHDS)
 		}else 
 		{
 			HDS.power				= hit_power;
-			HDS.add_wound			= true;
+			(pHDS->hit_type == ALife::eHitTypeStrike) ? HDS.add_wound = false : HDS.add_wound = true;
 			inherited::Hit			(&HDS);
 		}
 	}else
