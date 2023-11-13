@@ -14,7 +14,6 @@ enum{
 		AF_3DSCOPE_ENABLE		=(1<<11),
 		AF_PNV_W_SCOPE_DIS		=(1<<12),
 		AF_ZOOM_NEW_FD          =(1<<13),
-		AF_FP_DEATH				=(1<<14),
 };
 
 extern Flags32	psActorFlags;

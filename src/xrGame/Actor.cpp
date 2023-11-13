@@ -824,21 +824,12 @@ void CActor::Die	(CObject* who)
 
 	if (IsGameTypeSingle())
 	{
-		if (psActorFlags.test(AF_FP_DEATH))
-		{
-			cam_Set(eacFirstEye);
-		}
-		else
-		{
-			pcstr m_sDeathCamera = READ_IF_EXISTS(pSettings, r_string, "gameplay", "death_camera_mode", "freelook");
-
-			if (xr_strcmp("freelook", m_sDeathCamera) == 0)
+			if (death_camera_mode == 1)
 				cam_Set(eacFreeLook);
-			else if (xr_strcmp("fixedlook", m_sDeathCamera) == 0)
+			else if (death_camera_mode == 2)
 				cam_Set(eacFixedLookAt);
-			else if (xr_strcmp("firsteye", m_sDeathCamera) == 0)
+			else if (death_camera_mode == 3)
 				cam_Set(eacFirstEye);
-		}
 
 		CurrentGameUI()->HideShownDialogs();
 		start_tutorial("game_over");
