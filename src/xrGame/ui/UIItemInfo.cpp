@@ -249,13 +249,6 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 	else
 		UICost->Show(false);
 	
-//	CActor* actor = smart_cast<CActor*>( Level().CurrentViewEntity() );
-//	if ( g_pGameLevel && Level().game && actor )
-//	{
-//		game_cl_Deathmatch* gs_mp = smart_cast<game_cl_Deathmatch*>( Game() );
-//		IBuyWnd* buy_menu = gs_mp->pCurBuyMenu->GetItemPrice();
-//		GetItemPrice();
-//	}
 	if ( UITradeTip && IsGameTypeSingle())
 	{
 		pos.y = UITradeTip->GetWndPos().y;
