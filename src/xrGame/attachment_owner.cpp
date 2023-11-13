@@ -69,14 +69,11 @@ void __stdcall AttachmentCallback(IKinematics *tpKinematics)
 
 	IKinematics				*kinematics = smart_cast<IKinematics*>(game_object->Visual());
 
-	xr_vector<CAttachableItem*>::const_iterator	I = attachment_owner->attached_objects().begin();
-	xr_vector<CAttachableItem*>::const_iterator	E = attachment_owner->attached_objects().end();
-	for ( ; I != E; ++I) 
-	{
+	for (const auto* it : attachment_owner->attached_objects()) {
 		Fmatrix bone_mtx;
-		kinematics->Bone_GetAnimPos(bone_mtx, (*I)->bone_id(), u8(-1), false);
-		(*I)->item().object().XFORM().mul_43	(bone_mtx,(*I)->offset());
-		(*I)->item().object().XFORM().mulA_43	(game_object->XFORM());
+		kinematics->Bone_GetAnimPos(bone_mtx, it->bone_id(), u8(-1), false);
+		it->item().object().XFORM().mul_43(bone_mtx, it->offset());
+		it->item().object().XFORM().mulA_43(game_object->XFORM());
 	}
 }
 
